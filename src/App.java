@@ -1,4 +1,9 @@
+import java.beans.Statement;
 import java.io.Console;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -8,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         // Create a FilmManager instance
         Scanner scanner = new Scanner(System.in);
         FilmManager filmManager = new FilmManager();
@@ -177,8 +182,26 @@ public class App {
                 filmManager.loadFilmFromFile();
                 break;
                 case 11:
-                    // Exit
-                    System.out.println("Goodbye!");
+               Connection connection = null;
+        try {
+            // Vytvoření připojení k databázi
+            String url = "jdbc:sqlite:src/mydbmovies.db";
+            connection = DriverManager.getConnection(url);
+            
+        
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                // Uzavření připojení k databázi
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
