@@ -6,6 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -194,11 +199,54 @@ class FilmManager {
     // Save all films to a SQL database
     public void saveFilmsToDatabase() {
         // Implement this method based on your requirements
+        
+          
+        
+            Connection conn = DBConnection.getDBConnection();
+        
+            String insertUser = "INSERT INTO movies " + "(Name,Director,Year,Rating)" + "VALUES(?,?,?,?)";
+            
+            try (PreparedStatement prStmt = conn.prepareStatement(insertUser)) {
+                for (movieAbstract film : films.values()) {
+                   // List<String> actorsOrAnimators = (film instanceof LiveActionFilm) ? ((LiveActionFilm) film).getActors() : ((AnimatedFilm) film).getAnimators();
+                 //   int age = (film instanceof AnimatedFilm) ? ((AnimatedFilm) film).getAgeRating(): 0;
+                //    System.out.println("Name: "+film.getName() + ", Director: " + film.getDirector() + ", Year of production: " + film.getYear() + ", Movie rating: "
+                  //   + film.getRating() + ", Actors or Animators" + actorsOrAnimators + ((age > 0) ? ", Recommended age of viewer: " + age : ""));
+                
+              prStmt.setString(1, film.getName());
+              prStmt.setString(2, film.getDirector());
+              prStmt.setInt(3, film.getYear());
+              prStmt.setString(2, film.getRating());
+        
+              prStmt.executeUpdate();
+                }
+              System.out.println("New user been added into database!");
+            } catch (SQLException e) {
+              System.out.println("Did not work");
+              // e.printStackTrace();
+            }
+          
+          
+
+
+
     }
 
     // Load all films from a SQL database
     public void loadFilmsFromDatabase() {
         // Implement this method based on your requirements
+
+      
+          Connection conn = DBConnection.getDBConnection();
+          try (Statement prStmt = conn.createStatement();
+              ResultSet rs = prStmt.executeQuery("SELECT * FROM movies")) {
+            while (rs.next()) {
+              System.out.println(rs.getString("id_movie") + " : " + rs.getString("Name") + ", "
+                  + rs.getString("Director") + ", " + rs.getInt("Year") + ", " + rs.getInt("Rating"));
+            }
+          } catch (SQLException e) {
+            e.printStackTrace();
+          }
     }
 }
 

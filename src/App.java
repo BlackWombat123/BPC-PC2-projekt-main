@@ -182,26 +182,25 @@ public class App {
                 filmManager.loadFilmFromFile();
                 break;
                 case 11:
-               Connection connection = null;
-        try {
-            // Vytvoření připojení k databázi
-            String url = "jdbc:sqlite:src/mydbmovies.db";
-            connection = DriverManager.getConnection(url);
-            
-        
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        } finally {
-            try {
-                // Uzavření připojení k databázi
-                if (connection != null) {
-                    connection.close();
+                //filmManager.saveFilmsToDatabase();
+                Connection connection=null;
+                try {
+                   connection = DriverManager.getConnection("jdbc:sqlite:/mydbmovies.db");
+                    // použití connection pro práci s databází
+                } catch (SQLException e) {
+                    System.err.println("Error connecting to database");
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            connection.close();
+                        } catch (SQLException e) {
+                            System.err.println("Error closing database connection");
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
-            }
-        }
-    
+
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
